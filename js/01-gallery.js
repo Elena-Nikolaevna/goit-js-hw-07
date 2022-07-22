@@ -36,14 +36,35 @@ function onGalleryContainerClick(evt) {
   const isGalleryEl = evt.target.nodeName === "IMG";
   if (!isGalleryEl) {
     return;
+  } else {
+    const primaryImage = evt.target.dataset.source;
+    const openingImage = createOpeningImageMurkup(primaryImage);
+
+    openingImage.show();
   }
-  console.log(evt.target.dataset.source);
+  //console.log(evt.target.dataset.source);
 }
 
-/* import * as basicLightbox from 'basiclightbox'
+function createOpeningImageMurkup(src) {
+  const onOpen = basicLightbox.create(
+    `
+    <img src=${src} width="800" height="600">`,
+    {
+      onShow: (onOpen) => {
+        window.addEventListener("keydown", onClickEscape);
+      },
 
-const instance = basicLightbox.create(`
-    <img src="assets/images/image.png" width="800" height="600">
-`)
-
-instance.show() */
+      onClose: (onOpen) => {
+        window.addEventListener("keydown", onClickEscape);
+      },
+    }
+  );
+  function onClickEscape(evt) {
+    if (evt.code === "Escape") {
+      onOpen.close();
+    } else {
+      return;
+    }
+  }
+  return onOpen;
+}
